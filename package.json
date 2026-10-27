@@ -1,0 +1,23 @@
+{
+  "name": "hotelpro-hotel-management-system",
+  "version": "1.0.0",
+  "description": "HotelPro - Complete Hotel Booking & Management Solution (MERN Stack)",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "server-start": "cd server && npm start",
+    "client": "cd client && npm start",
+    "seed": "cd server && npm run seed",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": [
+    "hotel-management",
+    "mern",
+    "react",
+    "express",
+    "mongodb",
+    "jwt",
+    "bootstrap"
+  ],
+  "author": "Skill Wallet Student",
+  "license": "ISC"
+}

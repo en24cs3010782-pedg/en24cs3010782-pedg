@@ -1,0 +1,146 @@
+:root {
+  --primary-color: #1e3a8a;
+  --primary-hover: #172554;
+  --secondary-color: #d97706;
+  --accent-color: #0d9488;
+  --dark-bg: #0f172a;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-light: #e2e8f0;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 30px -4px rgba(15, 23, 42, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-main);
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar */
+.navbar-custom {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  padding: 0.8rem 1rem;
+}
+
+.brand-logo {
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--primary-color) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 58, 138, 0.8)),
+              url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  color: #ffffff;
+  padding: 5rem 1rem;
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 2.5rem;
+}
+
+.search-box-card {
+  background: #ffffff;
+  color: var(--text-main);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 1.5rem;
+  margin-top: -2.5rem;
+}
+
+/* Room Cards */
+.room-card {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: var(--card-bg);
+}
+
+.room-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.room-card-img {
+  height: 220px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.price-tag {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Stat Cards in Dashboard */
+.stat-card {
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow-md);
+  padding: 1.4rem;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Badges */
+.badge-available {
+  background-color: #dcfce7;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.badge-booked {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.badge-maintenance {
+  background-color: #fef3c7;
+  color: #b45309;
+  font-weight: 600;
+}
+
+/* Buttons */
+.btn-primary-hotel {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.btn-primary-hotel:hover {
+  background-color: var(--primary-hover);
+  color: #ffffff;
+}
+
+/* Footer */
+.footer-custom {
+  background-color: var(--dark-bg);
+  color: #94a3b8;
+  padding: 3rem 0 1.5rem;
+  margin-top: 5rem;
+}

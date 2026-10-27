@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HotelPro - Complete Hotel Booking & Management Solution</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏨</text></svg>">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --secondary: #d97706;
+      --accent: #0d9488;
+      --dark-bg: #0f172a;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 12px 36px -4px rgba(15, 23, 42, 0.14);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      background-color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar-custom {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      padding: 0.85rem 1rem;
+    }
+    .brand-logo {
+      font-weight: 800;
+      font-size: 1.45rem;
+      color: var(--primary) !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero */
+    .hero-section {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 58, 138, 0.82)),
+                  url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      color: #ffffff;
+      padding: 4.8rem 1rem 3.5rem;
+      border-radius: 0 0 28px 28px;
+    }
+
+    .search-box-card {
+      background: #ffffff;
+      color: var(--text-main);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 1.8rem;
+      margin-top: -2.8rem;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    /* Room Cards */
+    .room-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      background: var(--card-bg);
+    }
+    .room-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    .room-card-img {
+      height: 220px;
+      object-fit: cover;
+      width: 100%;
+    }
+    .price-tag {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    /* Badges */
+    .badge-available { background-color: #dcfce7; color: #15803d; font-weight: 600; }
+    .badge-booked { background-color: #fee2e2; color: #b91c1c; font-weight: 600; }
+    .badge-maintenance { background-color: #fef3c7; color: #b45309; font-weight: 600; }
+
+    /* Buttons */
+    .btn-primary-hotel {
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: 600;
+      border: none;
+      padding: 0.65rem 1.4rem;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .btn-primary-hotel:hover {
+      background-color: var(--primary-hover);
+      color: #ffffff;
+    }
+
+    /* KPI Cards */
+    .stat-card {
+      border-radius: var(--radius-lg);
+      border: none;
+      box-shadow: var(--shadow-md);
+      padding: 1.5rem;
+      background: #ffffff;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); }
+
+    /* Footer */
+    .footer-custom {
+      background-color: var(--dark-bg);
+      color: #94a3b8;
+      padding: 3.5rem 0 1.8rem;
+      margin-top: auto;
+    }
+
+    .view-section { display: none; }
+    .view-section.active { display: block; animation: fadeIn 0.25s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container">
+      <a class="navbar-brand brand-logo" href="#" onclick="switchView('home')">
+        <i class="bi bi-building-fill-check text-primary"></i>
+        <span>HotelPro</span>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-dark" href="#" onclick="switchView('home')">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-dark" href="#" onclick="switchView('rooms')">Explore Rooms</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold text-dark" href="#" onclick="switchView('dashboard')">
+              <i class="bi bi-calendar-check me-1 text-primary"></i> My Bookings
+              <span class="badge bg-primary rounded-pill ms-1" id="myBookingsBadge">0</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-bold text-primary" href="#" onclick="switchView('admin')">
+              <i class="bi bi-gear-wide-connected me-1"></i> Management Portal
+            </a>
+          </li>
+        </ul>
+
+        <!-- Right Side User Status & Role Switcher -->
+        <div class="d-flex align-items-center gap-2" id="authContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================== VIEW 1: HOME ======================== -->
+  <div id="view-home" class="view-section active">
+    <!-- Hero Banner -->
+    <header class="hero-section text-center">
+      <div class="container py-3">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3 shadow-sm">
+          ✨ Luxury Hospitality & Smart Booking System
+        </span>
+        <h1 class="display-4 fw-extrabold mb-3">
+          Experience Seamless Hotel Living
+        </h1>
+        <p class="lead text-light opacity-90 mx-auto mb-4" style="max-width: 720px;">
+          Streamlining hotel reservations, guest check-ins, automated billing, and real-time room inventory management across boutique and luxury properties.
+        </p>
+      </div>
+    </header>
+
+    <!-- Floating Availability Search Bar -->
+    <div class="container">
+      <div class="search-box-card">
+        <form onsubmit="handleHomeSearch(event)" class="row g-3 align-items-end">
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-semibold text-muted">
+              <i class="bi bi-calendar-event text-primary me-1"></i> Check-in Date
+            </label>
+            <input type="date" id="homeCheckIn" class="form-control form-control-lg fs-6" required />
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label small fw-semibold text-muted">
+              <i class="bi bi-calendar-check text-primary me-1"></i> Check-out Date
+            </label>
+            <input type="date" id="homeCheckOut" class="form-control form-control-lg fs-6" required />
+          </div>
+
+          <div class="col-lg-2 col-md-4">
+            <label class="form-label small fw-semibold text-muted">
+              <i class="bi bi-door-open text-primary me-1"></i> Room Type
+            </label>
+            <select id="homeRoomType" class="form-select form-select-lg fs-6">
+              <option value="All">All Categories</option>
+              <option value="Single">Single</option>
+              <option value="Double">Double</option>
+              <option value="Suite">Suite</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Family">Family</option>
+            </select>
+          </div>
+
+          <div class="col-lg-2 col-md-4">
+            <label class="form-label small fw-semibold text-muted">
+              <i class="bi bi-people text-primary me-1"></i> Guests
+            </label>
+            <select id="homeGuests" class="form-select form-select-lg fs-6">
+              <option value="1">1 Guest</option>
+              <option value="2">2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4+ Guests</option>
+            </select>
+          </div>
+
+          <div class="col-lg-2 col-md-4">
+            <button type="submit" class="btn btn-primary-hotel btn-lg w-100 d-flex justify-content-center align-items-center gap-2">
+              <i class="bi bi-search"></i>
+              <span>Find Rooms</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Features / Highlights -->
+    <section class="container mt-5 pt-4">
+      <div class="row g-4 text-center">
+        <div class="col-md-3">
+          <div class="p-4 bg-white rounded-4 shadow-sm border h-100">
+            <div class="fs-1 text-primary mb-2"><i class="bi bi-lightning-charge-fill"></i></div>
+            <h5 class="fw-bold">Instant Confirmation</h5>
+            <p className="text-muted small mb-0">Automatic reservation engine with conflict-free double-booking prevention.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-4 bg-white rounded-4 shadow-sm border h-100">
+            <div class="fs-1 text-primary mb-2"><i class="bi bi-shield-check"></i></div>
+            <h5 class="fw-bold">JWT Role Security</h5>
+            <p class="text-muted small mb-0">Multi-tiered role authorization for Guests, Reception Staff, and Administrators.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-4 bg-white rounded-4 shadow-sm border h-100">
+            <div class="fs-1 text-primary mb-2"><i class="bi bi-tag-fill"></i></div>
+            <h5 class="fw-bold">Dynamic Pricing</h5>
+            <p class="text-muted small mb-0">Automated nightly stay arithmetic with 10% tax breakdown and zero hidden fees.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="p-4 bg-white rounded-4 shadow-sm border h-100">
+            <div class="fs-1 text-primary mb-2"><i class="bi bi-headset"></i></div>
+            <h5 class="fw-bold">Front Desk Suite</h5>
+            <p class="text-muted small mb-0">Comprehensive check-in and check-out management with live occupancy metrics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Rooms Carousel/Grid -->
+    <section class="container mt-5 pt-3">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <span class="text-primary fw-bold text-uppercase small tracking-wide">Signature Suites</span>
+          <h2 class="fw-bold text-dark mb-0">Featured Accommodations</h2>
+        </div>
+        <button onclick="switchView('rooms')" class="btn btn-outline-primary rounded-pill px-4">
+          View All Rooms <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+
+      <div class="row g-4" id="featuredRoomsGrid">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+  </div>
+
+  <!-- ======================== VIEW 2: EXPLORE ROOMS ======================== -->
+  <div id="view-rooms" class="view-section container py-4">
+    <div class="mb-4">
+      <h1 class="fw-bold text-dark">Explore Our Rooms & Suites</h1>
+      <p class="text-muted">Browse handpicked luxury rooms, executive suites, and family spaces.</p>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="card shadow-sm border-0 mb-4 p-3 bg-white rounded-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-lg-4 col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="filterSearch" class="form-control border-start-0" placeholder="Search by title, number, or amenity..." oninput="renderRooms()" />
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="d-flex align-items-center gap-2">
+            <label class="text-muted small fw-semibold text-nowrap">Max Price: $<span id="maxPriceLabel">500</span></label>
+            <input type="range" class="form-range" id="filterMaxPrice" min="50" max="500" step="10" value="500" oninput="updatePriceSlider(this.value)" />
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4">
+          <select id="filterGuests" class="form-select form-select-sm" onchange="renderRooms()">
+            <option value="">Any Guests</option>
+            <option value="1">1+ Guest</option>
+            <option value="2">2+ Guests</option>
+            <option value="3">3+ Guests</option>
+            <option value="4">4+ Guests</option>
+          </select>
+        </div>
+
+        <div class="col-lg-2 col-md-4">
+          <select id="filterSort" class="form-select form-select-sm" onchange="renderRooms()">
+            <option value="default">Sort: Default</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="capacity">Capacity</option>
+          </select>
+        </div>
+
+        <div class="col-lg-1 col-md-4">
+          <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetFilters()" title="Reset Filters">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Type Pills -->
+      <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top">
+        <span class="text-muted small fw-semibold align-self-center me-2">Type:</span>
+        <button class="btn btn-sm rounded-pill px-3 btn-primary type-pill" data-type="All" onclick="selectTypeFilter('All')">All</button>
+        <button class="btn btn-sm rounded-pill px-3 btn-outline-secondary type-pill" data-type="Single" onclick="selectTypeFilter('Single')">Single</button>
+        <button class="btn btn-sm rounded-pill px-3 btn-outline-secondary type-pill" data-type="Double" onclick="selectTypeFilter('Double')">Double</button>
+        <button class="btn btn-sm rounded-pill px-3 btn-outline-secondary type-pill" data-type="Suite" onclick="selectTypeFilter('Suite')">Suite</button>
+        <button class="btn btn-sm rounded-pill px-3 btn-outline-secondary type-pill" data-type="Deluxe" onclick="selectTypeFilter('Deluxe')">Deluxe</button>
+        <button class="btn btn-sm rounded-pill px-3 btn-outline-secondary type-pill" data-type="Family" onclick="selectTypeFilter('Family')">Family</button>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted small">Showing <strong id="roomCount">0</strong> accommodation(s)</span>
+    </div>
+
+    <!-- Rooms Grid -->
+    <div class="row g-4" id="allRoomsGrid">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- ======================== VIEW 3: GUEST DASHBOARD ======================== -->
+  <div id="view-dashboard" class="view-section container py-4">
+    <!-- Welcome Card -->
+    <div class="card shadow-sm border-0 rounded-4 p-4 bg-white mb-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <span class="badge bg-light text-primary border px-3 py-1 mb-2">Guest Self-Service Portal</span>
+          <h2 class="fw-bold mb-1" id="dashGreeting">My Reservations</h2>
+          <p class="text-muted small mb-0">Track upcoming stays, review booking receipts, and manage cancellations.</p>
+        </div>
+        <button onclick="switchView('rooms')" class="btn btn-primary-hotel px-4 rounded-pill">
+          <i class="bi bi-plus-lg me-1"></i> Book New Room
+        </button>
+      </div>
+    </div>
+
+    <!-- Bookings List -->
+    <div id="myBookingsContainer" class="row g-4">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- ======================== VIEW 4: ADMIN & OPS DASHBOARD ======================== -->
+  <div id="view-admin" class="view-section container-fluid py-4 px-lg-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+      <div>
+        <h2 class="fw-bold text-dark mb-1">
+          <i class="bi bi-buildings-fill text-primary me-2"></i> Hotel Operations & Front Desk Portal
+        </h2>
+        <span class="text-muted small">Real-time inventory management, guest check-ins, and financial KPI analytics.</span>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button class="btn rounded-pill px-4 btn-primary" id="btnAdminTabRooms" onclick="switchAdminTab('rooms')">
+          <i class="bi bi-door-closed me-1"></i> Rooms Inventory
+        </button>
+        <button class="btn rounded-pill px-4 btn-outline-secondary" id="btnAdminTabBookings" onclick="switchAdminTab('bookings')">
+          <i class="bi bi-calendar-week me-1"></i> All Reservations
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Metric Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-md-6">
+        <div class="card stat-card border-start border-4 border-primary">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted small fw-semibold">TOTAL ROOMS</span>
+              <h3 class="fw-bold text-dark mb-0 mt-1" id="kpiTotalRooms">0</h3>
+            </div>
+            <div class="fs-1 text-primary opacity-75"><i class="bi bi-door-open"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="card stat-card border-start border-4 border-success">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted small fw-semibold">AVAILABLE ROOMS</span>
+              <h3 class="fw-bold text-success mb-0 mt-1" id="kpiAvailableRooms">0</h3>
+            </div>
+            <div class="fs-1 text-success opacity-75"><i class="bi bi-check-circle"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="card stat-card border-start border-4 border-warning">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted small fw-semibold">ACTIVE BOOKINGS</span>
+              <h3 class="fw-bold text-warning mb-0 mt-1" id="kpiActiveBookings">0</h3>
+            </div>
+            <div class="fs-1 text-warning opacity-75"><i class="bi bi-calendar2-check"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="card stat-card border-start border-4 border-info">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted small fw-semibold">TOTAL GROSS REVENUE</span>
+              <h3 class="fw-bold text-info mb-0 mt-1" id="kpiTotalRevenue">$0</h3>
+            </div>
+            <div class="fs-1 text-info opacity-75"><i class="bi bi-currency-dollar"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Tab 1: Rooms Inventory Table -->
+    <div id="adminTabRooms" class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">Rooms Catalog</h4>
+        <button onclick="openAddRoomModal()" class="btn btn-primary-hotel rounded-pill px-4">
+          <i class="bi bi-plus-lg me-1"></i> Add New Room
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Room #</th>
+              <th>Title & Category</th>
+              <th>Price/Night</th>
+              <th>Capacity</th>
+              <th>Bed</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminRoomsTableBody">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Admin Tab 2: Reservations Management Table -->
+    <div id="adminTabBookings" class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4" style="display: none;">
+      <h4 class="fw-bold mb-3">Guest Reservations Management</h4>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Booking ID</th>
+              <th>Guest Details</th>
+              <th>Room</th>
+              <th>Dates</th>
+              <th>Total Bill</th>
+              <th>Status</th>
+              <th class="text-end">Front Desk Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminBookingsTableBody">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== MODAL: BOOKING & CHECKOUT ======================== -->
+  <div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="modalRoomTitle">Reserve Room</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form onsubmit="handleConfirmBooking(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <img id="modalRoomImage" src="" class="img-fluid rounded-3 mb-2 w-100" style="height: 220px; object-fit: cover;" />
+                <div class="p-3 bg-light rounded-3">
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Room Number:</span>
+                    <strong class="text-dark" id="modalRoomNumber">#101</strong>
+                  </div>
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Category:</span>
+                    <strong class="text-dark" id="modalRoomType">Deluxe</strong>
+                  </div>
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Rate:</span>
+                    <strong class="text-primary" id="modalRoomRate">$150 / night</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label small fw-semibold text-muted">Check-In</label>
+                    <input type="date" id="modalCheckIn" class="form-control" onchange="calculateModalPrice()" required />
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label small fw-semibold text-muted">Check-Out</label>
+                    <input type="date" id="modalCheckOut" class="form-control" onchange="calculateModalPrice()" required />
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold text-muted">Guests</label>
+                  <select id="modalGuests" class="form-select">
+                    <option value="1">1 Guest</option>
+                    <option value="2">2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold text-muted">Guest Full Name</label>
+                  <input type="text" id="modalGuestName" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold text-muted">Contact Email</label>
+                  <input type="email" id="modalGuestEmail" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold text-muted">Payment Method</label>
+                  <select id="modalPaymentMethod" class="form-select">
+                    <option value="Credit Card">Credit Card (Instant Checkout)</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="UPI">UPI / Digital Wallet</option>
+                    <option value="Cash">Pay at Front Desk</option>
+                  </select>
+                </div>
+
+                <!-- Live Price Calculation Box -->
+                <div class="p-3 bg-light rounded-3 mb-3 border">
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span id="modalCalcFormula">$0 × 0 nights</span>
+                    <span id="modalCalcSubtotal">$0</span>
+                  </div>
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Taxes & Hotel Fees (10%)</span>
+                    <span id="modalCalcTax">$0</span>
+                  </div>
+                  <hr class="my-2" />
+                  <div class="d-flex justify-content-between fw-bold text-dark fs-5">
+                    <span>Total Bill:</span>
+                    <span class="text-primary" id="modalCalcTotal">$0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-hotel rounded-pill px-4">
+              <i class="bi bi-lock-fill me-1"></i> Confirm & Book
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== MODAL: ADD / EDIT ROOM ======================== -->
+  <div class="modal fade" id="roomEditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="roomEditModalTitle">Add Hotel Room</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form onsubmit="handleSaveRoom(event)">
+          <input type="hidden" id="editRoomId" />
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Room Number</label>
+                <input type="text" id="editRoomNumber" class="form-control" placeholder="e.g. 501" required />
+              </div>
+              <div class="col-md-8">
+                <label class="form-label small fw-semibold">Title</label>
+                <input type="text" id="editTitle" class="form-control" placeholder="e.g. Royal Panoramic Suite" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Category Type</label>
+                <select id="editType" class="form-select">
+                  <option value="Single">Single</option>
+                  <option value="Double">Double</option>
+                  <option value="Suite">Suite</option>
+                  <option value="Deluxe">Deluxe</option>
+                  <option value="Family">Family</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Price per Night ($)</label>
+                <input type="number" id="editPrice" class="form-control" placeholder="180" min="10" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Max Guests</label>
+                <input type="number" id="editCapacity" class="form-control" min="1" max="10" value="2" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Bed Type</label>
+                <select id="editBed" class="form-select">
+                  <option value="King">King Bed</option>
+                  <option value="Queen">Queen Bed</option>
+                  <option value="Twin">Twin Beds</option>
+                  <option value="Single">Single Bed</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Status</label>
+                <select id="editStatus" class="form-select">
+                  <option value="Available">Available</option>
+                  <option value="Booked">Booked</option>
+                  <option value="Maintenance">Maintenance</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Image URL</label>
+                <input type="url" id="editImage" class="form-control" placeholder="https://..." required />
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Amenities (comma-separated)</label>
+                <input type="text" id="editAmenities" class="form-control" placeholder="Free Wi-Fi, Air Conditioning, Balcony" required />
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Description</label>
+                <textarea id="editDescription" class="form-control" rows="3" required></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-hotel rounded-pill px-4">Save Room</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-custom">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <h5 class="text-white fw-bold mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-building-fill text-warning"></i> HotelPro
+          </h5>
+          <p class="small text-muted mb-3" style="max-width: 440px;">
+            A modern, digital-first hotel booking and operations management solution designed to meet the evolving needs of hospitality. Streamlining bookings, guest tracking, and management.
+          </p>
+          <button onclick="resetToInitialData()" class="btn btn-outline-secondary btn-sm rounded-pill text-light px-3">
+            <i class="bi bi-arrow-clockwise me-1"></i> Reset Demo Data to Factory State
+          </button>
+        </div>
+
+        <div class="col-lg-3 col-6">
+          <h6 class="text-white fw-semibold mb-3">Quick Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="#" onclick="switchView('home')" class="text-decoration-none text-muted">Home</a></li>
+            <li><a href="#" onclick="switchView('rooms')" class="text-decoration-none text-muted">Explore Rooms</a></li>
+            <li><a href="#" onclick="switchView('dashboard')" class="text-decoration-none text-muted">My Reservations</a></li>
+            <li><a href="#" onclick="switchView('admin')" class="text-decoration-none text-muted">Management Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-6">
+          <h6 class="text-white fw-semibold mb-3">Skill Wallet Project Status</h6>
+          <div class="p-3 bg-dark rounded-3 border border-secondary border-opacity-25 small text-light">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Epics Completed:</span>
+              <strong class="text-success">6 of 6 (100%)</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span>Tasks Completed:</span>
+              <strong class="text-success">19 of 19 (100%)</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Architecture:</span>
+              <strong class="text-warning">MERN + Bootstrap</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4 border-secondary opacity-25" />
+      <div class="d-flex flex-wrap justify-content-between align-items-center small text-muted">
+        <span>&copy; <span id="currentYear"></span> HotelPro. All rights reserved.</span>
+        <span>Ready for Skill Wallet Evaluation</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Application Engine Script -->
+  <script>
+    // Initial Seed Data
+    const INITIAL_ROOMS = [
+      {
+        id: "room_101",
+        roomNumber: "101",
+        title: "Standard Single Room",
+        type: "Single",
+        pricePerNight: 85,
+        capacity: 1,
+        bedType: "Single",
+        amenities: ["Free Wi-Fi", "Air Conditioning", "Flat-screen TV", "Work Desk"],
+        image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80",
+        description: "Cozy, elegant single room equipped with a modern workspace, high-speed Wi-Fi, and plush bedding for solo travelers.",
+        status: "Available",
+        featured: false
+      },
+      {
+        id: "room_201",
+        roomNumber: "201",
+        title: "Deluxe Queen Room",
+        type: "Double",
+        pricePerNight: 145,
+        capacity: 2,
+        bedType: "Queen",
+        amenities: ["Free Wi-Fi", "Air Conditioning", "Flat-screen TV", "Mini Bar", "Balcony"],
+        image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1000&q=80",
+        description: "Spacious deluxe room featuring a comfortable queen-size bed, private balcony overlooking the city skyline, and premium bathroom amenities.",
+        status: "Available",
+        featured: true
+      },
+      {
+        id: "room_301",
+        roomNumber: "301",
+        title: "Executive King Suite",
+        type: "Suite",
+        pricePerNight: 260,
+        capacity: 3,
+        bedType: "King",
+        amenities: ["Free Wi-Fi", "Air Conditioning", "Jacuzzi", "Mini Bar", "Balcony", "Room Service"],
+        image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80",
+        description: "Luxurious executive suite offering a private living area, jacuzzi tub, stunning panoramic views, and 24/7 dedicated room service.",
+        status: "Available",
+        featured: true
+      },
+      {
+        id: "room_401",
+        roomNumber: "401",
+        title: "Presidential Deluxe Penthouse",
+        type: "Deluxe",
+        pricePerNight: 420,
+        capacity: 4,
+        bedType: "King",
+        amenities: ["Free Wi-Fi", "Air Conditioning", "Jacuzzi", "Kitchenette", "Private Terrace", "Butler Service"],
+        image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80",
+        description: "The crown jewel of HotelPro. Features a sprawling private terrace, king master bedroom, premium sound system, and top-tier hospitality.",
+        status: "Available",
+        featured: true
+      },
+      {
+        id: "room_105",
+        roomNumber: "105",
+        title: "Family Comfort Suite",
+        type: "Family",
+        pricePerNight: 195,
+        capacity: 5,
+        bedType: "Double",
+        amenities: ["Free Wi-Fi", "Air Conditioning", "Flat-screen TV", "Mini Fridge", "Connecting Rooms"],
+        image: "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=1000&q=80",
+        description: "Generously proportioned family suite designed for relaxation with two double beds and child-friendly layout.",
+        status: "Available",
+        featured: false
+      },
+      {
+        id: "room_206",
+        roomNumber: "206",
+        title: "Classic Double Garden View",
+        type: "Double",
+        pricePerNight: 130,
+        capacity: 2,
+        bedType: "Twin",
+        amenities: ["Free Wi-Fi", "Air Conditioning", "Flat-screen TV", "Garden View", "Tea Maker"],
+        image: "https://images.unsplash.com/photo-1568495248636-6432b97bd949?auto=format&fit=crop&w=1000&q=80",
+        description: "A serene getaway featuring twin beds and peaceful views of the landscaped courtyard gardens.",
+        status: "Available",
+        featured: false
+      }
+    ];
+
+    const INITIAL_BOOKINGS = [
+      {
+        id: "HP-83921",
+        roomId: "room_201",
+        roomTitle: "Deluxe Queen Room",
+        roomNumber: "201",
+        roomImage: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1000&q=80",
+        guestName: "John Doe",
+        guestEmail: "guest@hotelpro.com",
+        guestPhone: "+1 (555) 0144",
+        checkIn: "2026-11-01",
+        checkOut: "2026-11-04",
+        nights: 3,
+        guests: 2,
+        totalPrice: 479,
+        paymentStatus: "Paid",
+        status: "Confirmed"
+      }
+    ];
+
+    // Current State Management
+    let currentUser = {
+      name: "John Doe (Guest)",
+      email: "guest@hotelpro.com",
+      role: "guest"
+    };
+
+    let rooms = [];
+    let bookings = [];
+    let selectedRoomForBooking = null;
+    let selectedTypeFilter = "All";
+
+    // Modals
+    let bookingModalInstance = null;
+    let roomEditModalInstance = null;
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      // Load or Seed Storage
+      const storedRooms = localStorage.getItem('hotelpro_rooms');
+      const storedBookings = localStorage.getItem('hotelpro_bookings');
+      const storedUser = localStorage.getItem('hotelpro_user');
+
+      rooms = storedRooms ? JSON.parse(storedRooms) : [...INITIAL_ROOMS];
+      bookings = storedBookings ? JSON.parse(storedBookings) : [...INITIAL_BOOKINGS];
+      if (storedUser) currentUser = JSON.parse(storedUser);
+
+      saveData();
+
+      // Initialize Modals
+      bookingModalInstance = new bootstrap.Modal(document.getElementById('bookingModal'));
+      roomEditModalInstance = new bootstrap.Modal(document.getElementById('roomEditModal'));
+
+      // Set Default Dates for Home & Modals
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const fourDays = new Date();
+      fourDays.setDate(fourDays.getDate() + 4);
+
+      document.getElementById('homeCheckIn').value = tomorrow.toISOString().split('T')[0];
+      document.getElementById('homeCheckOut').value = fourDays.toISOString().split('T')[0];
+      document.getElementById('modalCheckIn').value = tomorrow.toISOString().split('T')[0];
+      document.getElementById('modalCheckOut').value = fourDays.toISOString().split('T')[0];
+
+      renderAuthUI();
+      renderFeaturedRooms();
+      renderRooms();
+      renderDashboard();
+      renderAdmin();
+    });
+
+    function saveData() {
+      localStorage.setItem('hotelpro_rooms', JSON.stringify(rooms));
+      localStorage.setItem('hotelpro_bookings', JSON.stringify(bookings));
+      localStorage.setItem('hotelpro_user', JSON.stringify(currentUser));
+      updateBadgeCounts();
+    }
+
+    function resetToInitialData() {
+      if (!confirm("Reset all room inventory and reservations to initial default state?")) return;
+      rooms = [...INITIAL_ROOMS];
+      bookings = [...INITIAL_BOOKINGS];
+      currentUser = { name: "John Doe (Guest)", email: "guest@hotelpro.com", role: "guest" };
+      saveData();
+      renderFeaturedRooms();
+      renderRooms();
+      renderDashboard();
+      renderAdmin();
+      renderAuthUI();
+      alert("Demo data successfully restored!");
+    }
+
+    // View Switching
+    function switchView(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (viewName === 'rooms') renderRooms();
+      if (viewName === 'dashboard') renderDashboard();
+      if (viewName === 'admin') renderAdmin();
+    }
+
+    // Render User Header / Role Switcher
+    function renderAuthUI() {
+      const container = document.getElementById('authContainer');
+      const roleBadgeClass = currentUser.role === 'admin' ? 'bg-danger' : currentUser.role === 'staff' ? 'bg-warning text-dark' : 'bg-info text-dark';
+
+      container.innerHTML = `
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 rounded-pill px-3 py-1" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle fs-5 text-primary"></i>
+            <span class="fw-semibold small">${currentUser.name}</span>
+            <span class="badge ${roleBadgeClass} text-uppercase" style="font-size: 0.65rem;">${currentUser.role}</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+            <li class="dropdown-header small text-muted">Switch Role (Instant Test):</li>
+            <li><button class="dropdown-item py-2" onclick="setRole('admin')"><i class="bi bi-shield-fill text-danger me-2"></i> Admin Manager</button></li>
+            <li><button class="dropdown-item py-2" onclick="setRole('staff')"><i class="bi bi-person-badge-fill text-warning me-2"></i> Reception Staff</button></li>
+            <li><button class="dropdown-item py-2" onclick="setRole('guest')"><i class="bi bi-person-fill text-info me-2"></i> Guest / Traveler</button></li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function setRole(roleName) {
+      if (roleName === 'admin') {
+        currentUser = { name: "Admin Manager", email: "admin@hotelpro.com", role: "admin" };
+      } else if (roleName === 'staff') {
+        currentUser = { name: "Frontdesk Staff", email: "staff@hotelpro.com", role: "staff" };
+      } else {
+        currentUser = { name: "John Doe (Guest)", email: "guest@hotelpro.com", role: "guest" };
+      }
+      saveData();
+      renderAuthUI();
+      renderDashboard();
+      renderAdmin();
+    }
+
+    function updateBadgeCounts() {
+      const guestBookings = bookings.filter(b => b.guestEmail === currentUser.email && b.status !== 'Cancelled');
+      document.getElementById('myBookingsBadge').textContent = guestBookings.length;
+    }
+
+    // Render Featured Rooms on Home
+    function renderFeaturedRooms() {
+      const grid = document.getElementById('featuredRoomsGrid');
+      const featured = rooms.filter(r => r.featured).slice(0, 3);
+
+      grid.innerHTML = featured.map(room => createRoomCardHTML(room)).join('');
+    }
+
+    // Render Explore Rooms View
+    function renderRooms() {
+      const search = document.getElementById('filterSearch').value.toLowerCase().trim();
+      const maxPrice = Number(document.getElementById('filterMaxPrice').value);
+      const minGuests = Number(document.getElementById('filterGuests').value) || 0;
+      const sortBy = document.getElementById('filterSort').value;
+
+      let filtered = rooms.filter(room => {
+        if (selectedTypeFilter !== 'All' && room.type !== selectedTypeFilter) return false;
+        if (room.pricePerNight > maxPrice) return false;
+        if (minGuests && room.capacity < minGuests) return false;
+        if (search) {
+          const matchTitle = room.title.toLowerCase().includes(search);
+          const matchNum = room.roomNumber.toLowerCase().includes(search);
+          const matchAmenity = room.amenities.some(a => a.toLowerCase().includes(search));
+          if (!matchTitle && !matchNum && !matchAmenity) return false;
+        }
+        return true;
+      });
+
+      if (sortBy === 'price_asc') filtered.sort((a,b) => a.pricePerNight - b.pricePerNight);
+      if (sortBy === 'price_desc') filtered.sort((a,b) => b.pricePerNight - a.pricePerNight);
+      if (sortBy === 'capacity') filtered.sort((a,b) => b.capacity - a.capacity);
+
+      document.getElementById('roomCount').textContent = filtered.length;
+      const grid = document.getElementById('allRoomsGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-door-closed fs-1 text-muted mb-3 d-block"></i>
+            <h4 class="fw-bold">No Rooms Match Your Filter</h4>
+            <p class="text-muted">Try resetting your filters or expanding your price range.</p>
+            <button class="btn btn-primary rounded-pill px-4" onclick="resetFilters()">Reset All Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(room => createRoomCardHTML(room)).join('');
+    }
+
+    function createRoomCardHTML(room) {
+      const badgeClass = room.status === 'Available' ? 'badge-available' : room.status === 'Booked' ? 'badge-booked' : 'badge-maintenance';
+
+      return `
+        <div class="col-lg-4 col-md-6">
+          <div class="card room-card h-100 shadow-sm">
+            <div class="position-relative">
+              <img src="${room.image}" class="room-card-img" alt="${room.title}" />
+              <div class="position-absolute top-0 end-0 m-3">
+                <span class="badge px-3 py-2 rounded-pill ${badgeClass}">${room.status}</span>
+              </div>
+              <div class="position-absolute bottom-0 start-0 m-3">
+                <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1 rounded">Room #${room.roomNumber}</span>
+              </div>
+            </div>
+
+            <div class="card-body d-flex flex-column p-4">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title fw-bold text-dark mb-0">${room.title}</h5>
+                <span class="badge bg-light text-primary border border-primary-subtle px-2 py-1">${room.type}</span>
+              </div>
+
+              <p class="card-text text-muted small flex-grow-1 mb-3">
+                ${room.description.length > 95 ? room.description.substring(0, 95) + '...' : room.description}
+              </p>
+
+              <div class="d-flex align-items-center gap-3 text-muted small mb-3 border-top border-bottom py-2">
+                <span><i class="bi bi-people-fill text-primary me-1"></i> ${room.capacity} Guests</span>
+                <span><i class="bi bi-door-closed text-primary me-1"></i> ${room.bedType} Bed</span>
+              </div>
+
+              <div class="d-flex flex-wrap gap-1 mb-3">
+                ${room.amenities.slice(0, 3).map(a => `<span class="badge bg-light text-secondary border small">${a}</span>`).join('')}
+                ${room.amenities.length > 3 ? `<span class="badge bg-light text-secondary border small">+${room.amenities.length - 3}</span>` : ''}
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+                <div>
+                  <span class="price-tag">$${room.pricePerNight}</span>
+                  <span class="text-muted small"> / night</span>
+                </div>
+                <button onclick="openBookingModal('${room.id}')" class="btn btn-outline-primary btn-sm px-3 rounded-pill fw-semibold" ${room.status === 'Maintenance' ? 'disabled' : ''}>
+                  ${room.status === 'Maintenance' ? 'Under Maintenance' : 'Reserve Stay &rarr;'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updatePriceSlider(val) {
+      document.getElementById('maxPriceLabel').textContent = val;
+      renderRooms();
+    }
+
+    function selectTypeFilter(type) {
+      selectedTypeFilter = type;
+      document.querySelectorAll('.type-pill').forEach(btn => {
+        if (btn.getAttribute('data-type') === type) {
+          btn.classList.add('btn-primary');
+          btn.classList.remove('btn-outline-secondary');
+        } else {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline-secondary');
+        }
+      });
+      renderRooms();
+    }
+
+    function resetFilters() {
+      document.getElementById('filterSearch').value = '';
+      document.getElementById('filterMaxPrice').value = '500';
+      document.getElementById('maxPriceLabel').textContent = '500';
+      document.getElementById('filterGuests').value = '';
+      document.getElementById('filterSort').value = 'default';
+      selectTypeFilter('All');
+    }
+
+    function handleHomeSearch(e) {
+      e.preventDefault();
+      const inDate = document.getElementById('homeCheckIn').value;
+      const outDate = document.getElementById('homeCheckOut').value;
+      const rType = document.getElementById('homeRoomType').value;
+      const rGuests = document.getElementById('homeGuests').value;
+
+      document.getElementById('modalCheckIn').value = inDate;
+      document.getElementById('modalCheckOut').value = outDate;
+      document.getElementById('filterGuests').value = rGuests;
+      selectTypeFilter(rType);
+      switchView('rooms');
+    }
+
+    // Booking Flow
+    function openBookingModal(roomId) {
+      const room = rooms.find(r => r.id === roomId);
+      if (!room) return;
+
+      selectedRoomForBooking = room;
+      document.getElementById('modalRoomTitle').textContent = `Reserve ${room.title}`;
+      document.getElementById('modalRoomNumber').textContent = `#${room.roomNumber}`;
+      document.getElementById('modalRoomType').textContent = room.type;
+      document.getElementById('modalRoomRate').textContent = `$${room.pricePerNight} / night`;
+      document.getElementById('modalRoomImage').src = room.image;
+
+      document.getElementById('modalGuestName').value = currentUser.name;
+      document.getElementById('modalGuestEmail').value = currentUser.email;
+
+      calculateModalPrice();
+      bookingModalInstance.show();
+    }
+
+    function calculateModalPrice() {
+      if (!selectedRoomForBooking) return;
+      const checkIn = new Date(document.getElementById('modalCheckIn').value);
+      const checkOut = new Date(document.getElementById('modalCheckOut').value);
+
+      let diffDays = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0 || isNaN(diffDays)) diffDays = 1;
+
+      const subtotal = diffDays * selectedRoomForBooking.pricePerNight;
+      const tax = Math.round(subtotal * 0.1);
+      const total = subtotal + tax;
+
+      document.getElementById('modalCalcFormula').textContent = `$${selectedRoomForBooking.pricePerNight} × ${diffDays} night(s)`;
+      document.getElementById('modalCalcSubtotal').textContent = `$${subtotal}`;
+      document.getElementById('modalCalcTax').textContent = `$${tax}`;
+      document.getElementById('modalCalcTotal').textContent = `$${total}`;
+    }
+
+    function handleConfirmBooking(e) {
+      e.preventDefault();
+      if (!selectedRoomForBooking) return;
+
+      const checkIn = document.getElementById('modalCheckIn').value;
+      const checkOut = document.getElementById('modalCheckOut').value;
+
+      if (new Date(checkOut) <= new Date(checkIn)) {
+        alert("Check-out date must be strictly after the check-in date!");
+        return;
+      }
+
+      let diffDays = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0) diffDays = 1;
+
+      const subtotal = diffDays * selectedRoomForBooking.pricePerNight;
+      const total = subtotal + Math.round(subtotal * 0.1);
+
+      const newBooking = {
+        id: "HP-" + Math.floor(10000 + Math.random() * 90000),
+        roomId: selectedRoomForBooking.id,
+        roomTitle: selectedRoomForBooking.title,
+        roomNumber: selectedRoomForBooking.roomNumber,
+        roomImage: selectedRoomForBooking.image,
+        guestName: document.getElementById('modalGuestName').value,
+        guestEmail: document.getElementById('modalGuestEmail').value,
+        guestPhone: "+1 (555) 0199",
+        checkIn: checkIn,
+        checkOut: checkOut,
+        nights: diffDays,
+        guests: Number(document.getElementById('modalGuests').value),
+        totalPrice: total,
+        paymentStatus: "Paid",
+        status: "Confirmed"
+      };
+
+      // Mark Room as Booked
+      selectedRoomForBooking.status = "Booked";
+      bookings.unshift(newBooking);
+
+      saveData();
+      bookingModalInstance.hide();
+
+      alert(`🎉 Booking Confirmed!\nReservation ID: ${newBooking.id}\nTotal Paid: $${total}`);
+      renderRooms();
+      renderDashboard();
+      renderAdmin();
+      switchView('dashboard');
+    }
+
+    // Render Guest Dashboard
+    function renderDashboard() {
+      document.getElementById('dashGreeting').textContent = `Reservations for ${currentUser.name}`;
+      const container = document.getElementById('myBookingsContainer');
+
+      const guestBookings = bookings.filter(b => b.guestEmail === currentUser.email);
+
+      if (guestBookings.length === 0) {
+        container.innerHTML = `
+          <div class="col-12">
+            <div class="card border-0 shadow-sm text-center p-5 bg-white rounded-4">
+              <i class="bi bi-calendar-x fs-1 text-muted mb-3"></i>
+              <h5 class="fw-bold">No Active Reservations</h5>
+              <p class="text-muted small">You don't have any hotel room bookings yet.</p>
+              <button onclick="switchView('rooms')" class="btn btn-outline-primary mx-auto rounded-pill px-4">Browse Available Rooms</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = guestBookings.map(b => {
+        const badgeClass = b.status === 'Confirmed' ? 'bg-primary-subtle text-primary' : b.status === 'CheckedIn' ? 'bg-success-subtle text-success' : b.status === 'CheckedOut' ? 'bg-secondary-subtle text-secondary' : 'bg-danger-subtle text-danger';
+
+        return `
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-white">
+              <div class="row g-0 h-100">
+                <div class="col-md-5">
+                  <img src="${b.roomImage}" class="img-fluid h-100 w-100" style="object-fit: cover; min-height: 200px;" />
+                </div>
+                <div class="col-md-7 d-flex flex-column p-4">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge rounded-pill px-3 py-1 ${badgeClass}">${b.status}</span>
+                    <span class="small text-muted">Room #${b.roomNumber}</span>
+                  </div>
+
+                  <h5 class="fw-bold mb-1 text-dark">${b.roomTitle}</h5>
+                  <div class="small text-muted mb-3"><i class="bi bi-tag me-1"></i> ID: <code>${b.id}</code></div>
+
+                  <div class="small text-muted mb-2">
+                    <i class="bi bi-calendar3 me-2 text-primary"></i><strong>${b.checkIn}</strong> &rarr; <strong>${b.checkOut}</strong>
+                  </div>
+                  <div class="small text-muted mb-3">
+                    <i class="bi bi-moon-stars me-2 text-primary"></i>${b.nights} Night(s) &bull; ${b.guests} Guest(s)
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                    <div>
+                      <span class="fw-bold fs-5 text-primary">$${b.totalPrice}</span>
+                      <span class="badge bg-success-subtle text-success ms-2">${b.paymentStatus}</span>
+                    </div>
+
+                    ${b.status !== 'Cancelled' && b.status !== 'CheckedOut' ? `
+                      <button onclick="cancelBooking('${b.id}')" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                        Cancel Stay
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function cancelBooking(bookingId) {
+      if (!confirm("Are you sure you want to cancel this reservation? Full refund will be initiated.")) return;
+      const booking = bookings.find(b => b.id === bookingId);
+      if (booking) {
+        booking.status = "Cancelled";
+        booking.paymentStatus = "Refunded";
+
+        // Free up room
+        const room = rooms.find(r => r.id === booking.roomId);
+        if (room && room.status === 'Booked') room.status = 'Available';
+
+        saveData();
+        renderDashboard();
+        renderAdmin();
+        renderRooms();
+        alert("Booking cancelled and refund processed.");
+      }
+    }
+
+    // Admin & Ops Management
+    function switchAdminTab(tabName) {
+      if (tabName === 'rooms') {
+        document.getElementById('adminTabRooms').style.display = 'block';
+        document.getElementById('adminTabBookings').style.display = 'none';
+        document.getElementById('btnAdminTabRooms').className = 'btn rounded-pill px-4 btn-primary';
+        document.getElementById('btnAdminTabBookings').className = 'btn rounded-pill px-4 btn-outline-secondary';
+      } else {
+        document.getElementById('adminTabRooms').style.display = 'none';
+        document.getElementById('adminTabBookings').style.display = 'block';
+        document.getElementById('btnAdminTabRooms').className = 'btn rounded-pill px-4 btn-outline-secondary';
+        document.getElementById('btnAdminTabBookings').className = 'btn rounded-pill px-4 btn-primary';
+      }
+    }
+
+    function renderAdmin() {
+      // Calculate KPIs
+      const totalRooms = rooms.length;
+      const availableRooms = rooms.filter(r => r.status === 'Available').length;
+      const activeBookings = bookings.filter(b => b.status === 'Confirmed' || b.status === 'CheckedIn').length;
+      const totalRevenue = bookings.filter(b => b.status !== 'Cancelled').reduce((acc, b) => acc + b.totalPrice, 0);
+
+      document.getElementById('kpiTotalRooms').textContent = totalRooms;
+      document.getElementById('kpiAvailableRooms').textContent = availableRooms;
+      document.getElementById('kpiActiveBookings').textContent = activeBookings;
+      document.getElementById('kpiTotalRevenue').textContent = `$${totalRevenue}`;
+
+      // Render Admin Rooms Table
+      const rBody = document.getElementById('adminRoomsTableBody');
+      rBody.innerHTML = rooms.map(room => {
+        const badgeClass = room.status === 'Available' ? 'bg-success-subtle text-success' : room.status === 'Booked' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning';
+
+        return `
+          <tr>
+            <td><span class="badge bg-dark px-3 py-2">#${room.roomNumber}</span></td>
+            <td>
+              <div class="fw-semibold text-dark">${room.title}</div>
+              <small class="text-muted">${room.type}</small>
+            </td>
+            <td><span class="fw-bold text-primary">$${room.pricePerNight}</span></td>
+            <td>${room.capacity} Guests</td>
+            <td>${room.bedType}</td>
+            <td><span class="badge rounded-pill px-3 py-1 ${badgeClass}">${room.status}</span></td>
+            <td class="text-end">
+              <button onclick="openEditRoomModal('${room.id}')" class="btn btn-outline-primary btn-sm rounded-pill px-3 me-1">Edit</button>
+              <button onclick="deleteRoom('${room.id}', '${room.roomNumber}')" class="btn btn-outline-danger btn-sm rounded-pill px-2" ${currentUser.role !== 'admin' ? 'disabled title="Only Admin can delete"' : ''}>
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Render Admin Bookings Table
+      const bBody = document.getElementById('adminBookingsTableBody');
+      bBody.innerHTML = bookings.map(b => {
+        const badgeClass = b.status === 'Confirmed' ? 'bg-primary-subtle text-primary' : b.status === 'CheckedIn' ? 'bg-success-subtle text-success' : b.status === 'CheckedOut' ? 'bg-secondary-subtle text-secondary' : 'bg-danger-subtle text-danger';
+
+        return `
+          <tr>
+            <td><code>${b.id}</code></td>
+            <td>
+              <div class="fw-bold">${b.guestName}</div>
+              <small class="text-muted d-block">${b.guestEmail}</small>
+            </td>
+            <td>
+              <span class="fw-semibold">Room #${b.roomNumber}</span>
+              <small class="text-muted d-block">${b.roomTitle}</small>
+            </td>
+            <td>
+              <div class="small"><strong>In:</strong> ${b.checkIn}</div>
+              <div class="small"><strong>Out:</strong> ${b.checkOut}</div>
+            </td>
+            <td>
+              <span class="fw-bold text-primary">$${b.totalPrice}</span>
+              <div class="small text-success">${b.paymentStatus}</div>
+            </td>
+            <td><span class="badge rounded-pill px-3 py-1 ${badgeClass}">${b.status}</span></td>
+            <td class="text-end">
+              <div class="btn-group">
+                ${b.status === 'Confirmed' ? `
+                  <button onclick="updateBookingStatus('${b.id}', 'CheckedIn')" class="btn btn-success btn-sm">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Check In
+                  </button>
+                ` : ''}
+                ${b.status === 'CheckedIn' ? `
+                  <button onclick="updateBookingStatus('${b.id}', 'CheckedOut')" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-box-arrow-right me-1"></i> Check Out
+                  </button>
+                ` : ''}
+                ${b.status !== 'Cancelled' && b.status !== 'CheckedOut' ? `
+                  <button onclick="updateBookingStatus('${b.id}', 'Cancelled')" class="btn btn-outline-danger btn-sm">
+                    Cancel
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateBookingStatus(id, newStatus) {
+      const b = bookings.find(x => x.id === id);
+      if (!b) return;
+      b.status = newStatus;
+
+      const r = rooms.find(room => room.id === b.roomId);
+      if (r) {
+        if (newStatus === 'CheckedOut' || newStatus === 'Cancelled') {
+          r.status = 'Available';
+        } else if (newStatus === 'CheckedIn') {
+          r.status = 'Booked';
+        }
+      }
+
+      saveData();
+      renderAdmin();
+      renderDashboard();
+      renderRooms();
+    }
+
+    function openAddRoomModal() {
+      document.getElementById('roomEditModalTitle').textContent = 'Add New Hotel Room';
+      document.getElementById('editRoomId').value = '';
+      document.getElementById('editRoomNumber').value = '';
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editType').value = 'Deluxe';
+      document.getElementById('editPrice').value = '160';
+      document.getElementById('editCapacity').value = '2';
+      document.getElementById('editBed').value = 'King';
+      document.getElementById('editStatus').value = 'Available';
+      document.getElementById('editImage').value = 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80';
+      document.getElementById('editAmenities').value = 'Free Wi-Fi, Air Conditioning, Flat-screen TV, Balcony';
+      document.getElementById('editDescription').value = 'Spacious room with modern decor and premium hospitality features.';
+
+      roomEditModalInstance.show();
+    }
+
+    function openEditRoomModal(roomId) {
+      const r = rooms.find(x => x.id === roomId);
+      if (!r) return;
+
+      document.getElementById('roomEditModalTitle').textContent = `Edit Room #${r.roomNumber}`;
+      document.getElementById('editRoomId').value = r.id;
+      document.getElementById('editRoomNumber').value = r.roomNumber;
+      document.getElementById('editTitle').value = r.title;
+      document.getElementById('editType').value = r.type;
+      document.getElementById('editPrice').value = r.pricePerNight;
+      document.getElementById('editCapacity').value = r.capacity;
+      document.getElementById('editBed').value = r.bedType;
+      document.getElementById('editStatus').value = r.status;
+      document.getElementById('editImage').value = r.image;
+      document.getElementById('editAmenities').value = r.amenities.join(', ');
+      document.getElementById('editDescription').value = r.description;
+
+      roomEditModalInstance.show();
+    }
+
+    function handleSaveRoom(e) {
+      e.preventDefault();
+      const id = document.getElementById('editRoomId').value;
+      const num = document.getElementById('editRoomNumber').value.trim();
+
+      const payload = {
+        roomNumber: num,
+        title: document.getElementById('editTitle').value.trim(),
+        type: document.getElementById('editType').value,
+        pricePerNight: Number(document.getElementById('editPrice').value),
+        capacity: Number(document.getElementById('editCapacity').value),
+        bedType: document.getElementById('editBed').value,
+        status: document.getElementById('editStatus').value,
+        image: document.getElementById('editImage').value.trim(),
+        amenities: document.getElementById('editAmenities').value.split(',').map(s => s.trim()).filter(Boolean),
+        description: document.getElementById('editDescription').value.trim(),
+        featured: false
+      };
+
+      if (id) {
+        const idx = rooms.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          rooms[idx] = { ...rooms[idx], ...payload };
+        }
+      } else {
+        payload.id = "room_" + Math.floor(1000 + Math.random() * 9000);
+        rooms.unshift(payload);
+      }
+
+      saveData();
+      roomEditModalInstance.hide();
+      renderRooms();
+      renderAdmin();
+      renderFeaturedRooms();
+    }
+
+    function deleteRoom(id, num) {
+      if (!confirm(`Are you sure you want to delete Room #${num}?`)) return;
+      rooms = rooms.filter(r => r.id !== id);
+      saveData();
+      renderRooms();
+      renderAdmin();
+      renderFeaturedRooms();
+    }
+  </script>
+</body>
+</html>
